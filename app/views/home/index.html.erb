@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style media="screen">
+      body{
+        margin-top:100px;
+        text-align: center;
+      }
+      table{
+        border: solid 2px black;
+        border-spacing: 0px;
+      }
+      td{
+        border: solid 1px black;
+        height:80px;
+        width:80px;
+      }
+      p{
+        text-align: center;
+        font-size: 25px;
+      }
+    </style>
+  <%= action_cable_meta_tag %>
+  </head>
+  <body>
+    <center>
+      <h1>Tic-Tac-Toe</h1>
+      <h3>Player: Player <%= session[:player] %></h3>
+      <h3>Moves: <span id="move_text"><%= "Player 1" if $move_player.nil? %><%= $move_player %></span></h3>
+      <table border="1">
+        <tr>
+          <td id="0" class="0 tile"></td>
+          <td id="1" class="1 tile"></td>
+          <td id="2" class="2 tile"></td>
+        </tr>
+        <tr>
+          <td id="3" class="3 tile"></td>
+          <td id="4" class="4 tile"></td>
+          <td id="5" class="5 tile"></td>
+        </tr>
+        <tr>
+          <td id="6" class="6 tile"></td>
+          <td id="7" class="7 tile"></td>
+          <td id="8" class="8 tile"></td>
+        </tr>
+      </table>
+    </center>
+  </body>
+  <script type="text/javascript">
+    var player = "Player <%= session[:player] %>";
+    $(document).ready(function(){
+      var gm = '<%= $gm %>';
+      for(var i = 0;i< gm.length ;i++){
+        if(gm[i]=="X" || gm[i]=="O"){
+          $("#"+i).html("<p>" + gm[i] + "<p>")
+        }
+      }
+
+      $("td").click(function(){
+        var key = $(this).attr('id');
+        var move_text = $("#move_text").html();
+        if(move_text==player && $(this).html()=="" ){
+          move(key);
+        }
+      });
+    });
+
+    function move(btn){
+      console.log("presss..."+btn)
+      $.ajax({
+            type: 'GET',
+            url: '/home/move',
+            data: {
+                move: btn
+            },
+            success: function()
+            {
+              console.log("player move")
+            }
+        });
+    }
+
+  </script>
+</html>
